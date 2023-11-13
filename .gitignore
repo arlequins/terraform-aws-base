@@ -1,0 +1,15 @@
+# root
+.DS_Store
+.vscode
+terraform.log
+crash.log
+memo.txt
+
+# terraform files.
+.terraform
+.terraform.d
+.terraform.lock.hcl
+
+# terraform customize file.
+terraform.tfvars
+plan.out
