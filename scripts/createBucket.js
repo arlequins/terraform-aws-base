@@ -1,5 +1,5 @@
 import { CreateBucketCommand, HeadBucketCommand } from "@aws-sdk/client-s3";
-import { s3Client, profile } from "./s3Client.js";
+import { s3Client } from "./s3Client.js";
 
 const createBucket = async (params) => {
   const result = {
@@ -24,7 +24,7 @@ const createBucket = async (params) => {
   }
 
   if (result.head.result === 403) {
-    console.error({reaspon: 'no auth',profile})
+    console.error({reaspon: 'no auth'})
     return
   }
 

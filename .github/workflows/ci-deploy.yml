@@ -5,7 +5,6 @@ on:
     types: [created]
 
 env:
-  AWS_PROFILE_NAME: default
   AWS_REGION: ap-northeast-1
   WORK_DIR: ./terraform
   SCRIPT_DIR: ./scripts
@@ -42,34 +41,24 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Set named credentials
-        run: |
-          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }} --profile ${{ env.AWS_PROFILE_NAME }}
-          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }} --profile ${{ env.AWS_PROFILE_NAME }}
-          aws configure set region ${{ env.AWS_REGION }} --profile ${{ env.AWS_PROFILE_NAME }}
-
       - name: npm install
         run: npm install
         working-directory: ${{ env.SCRIPT_DIR }}
 
       - name: npm download
-        run: npm run download:ci
+        run: npm run download
         working-directory: ${{ env.SCRIPT_DIR }}
 
       - name: init
         run: terraform init
 
       - name: plan
-        env:
-          TF_VAR_deploy_user: ${{ env.AWS_PROFILE_NAME }}
         run: terraform plan -out="out.plan"
 
       - name: apply
-        env:
-          TF_VAR_deploy_user: ${{ env.AWS_PROFILE_NAME }}
         run: terraform apply out.plan
 
       - name: npm upload
         if: always()
-        run: npm run upload:ci
+        run: npm run upload
         working-directory: ${{ env.SCRIPT_DIR }}
