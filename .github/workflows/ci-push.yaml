@@ -8,6 +8,7 @@ env:
   AWS_PROFILE_NAME: default
   AWS_REGION: ap-northeast-1
   WORK_DIR: ./terraform
+  SCRIPT_DIR: ./scripts
 
 jobs:
 
