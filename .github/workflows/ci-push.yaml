@@ -47,11 +47,11 @@ jobs:
 
       - name: npm install
         run: npm install
-        working-directory: ${{ env.WORK_DIR }}/scripts
+        working-directory: ${{ env.SCRIPT_DIR }}
 
       - name: npm download
         run: npm run download:ci
-        working-directory: ${{ env.WORK_DIR }}/scripts
+        working-directory: ${{ env.SCRIPT_DIR }}
 
       - name: fmt
         run: terraform fmt -check
@@ -70,4 +70,4 @@ jobs:
       - name: npm upload
         if: always()
         run: npm run upload:ci
-        working-directory: ${{ env.WORK_DIR }}/scripts
+        working-directory: ${{ env.SCRIPT_DIR }}
