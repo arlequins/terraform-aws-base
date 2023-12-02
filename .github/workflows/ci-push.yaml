@@ -24,7 +24,7 @@ jobs:
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.6.2
+          terraform_version: 1.6.5
 
       - name: Checkout Repo
         uses: actions/checkout@v4

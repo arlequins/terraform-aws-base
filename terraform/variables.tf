@@ -26,13 +26,3 @@ variable "compute_optimizer" {
 variable "iam" {
   type = any
 }
-variable "common_log" {
-  type = any
-}
-# security
-variable "security_iam" {
-  type = any
-}
-variable "security_s3" {
-  type = any
-}
