@@ -10,9 +10,8 @@ terraform {
 }
 
 provider "aws" {
-  # TODO: need to change profile.
-  profile = "default"
-  region  = "ap-northeast-1"
+  profile = var.deploy_user
+  region  = var.region
 
   default_tags {
     tags = var.tags
@@ -21,7 +20,7 @@ provider "aws" {
 
 # Need to add aws provider(us-east-1) for CloudFront Metric.
 provider "aws" {
-  profile = "default"
+  profile = var.deploy_user
   region  = "us-east-1"
   alias   = "us-east-1"
 

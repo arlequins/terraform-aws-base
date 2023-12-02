@@ -1,20 +1,20 @@
 variable "deploy_user" {
-  type = string
-  default = "terraform"
+  type    = string
+  default = "default"
 }
 variable "tags" {
   type = map(string)
   default = {
-    env  = "dev"
-    service  = "base"
+    env     = "dev"
+    service = "base"
   }
 }
 variable "region" {
-  type = string
+  type    = string
   default = "ap-northeast-1"
 }
 variable "name_prefix" {
-  type = string
+  type    = string
   default = "base-"
 }
 variable "compute_optimizer" {

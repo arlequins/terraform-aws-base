@@ -11,5 +11,8 @@ memo.txt
 .terraform.lock.hcl
 
 # terraform customize file.
-terraform.tfvars
 plan.out
+
+out.plan
+terraform.tfstate
+terraform.tfstate.backup

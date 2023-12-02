@@ -36,7 +36,7 @@ resource "aws_iam_user" "this" {
 resource "aws_iam_user_login_profile" "this" {
   for_each                = { for k, v in var.user : k => v if v.is_console_access }
   user                    = each.key
-  pgp_key                 = "keybase:exp_enechange"
+  pgp_key                 = "keybase:arlequin"
   password_reset_required = true
   # Check this following document.
   # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_user_login_profile#import
