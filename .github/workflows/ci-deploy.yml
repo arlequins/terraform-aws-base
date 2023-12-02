@@ -61,12 +61,12 @@ jobs:
 
       - name: plan
         env:
-          TF_VAR_deploy_user: ${{ vars.DEPLOY_USER }}
+          TF_VAR_deploy_user: ${{ env.AWS_PROFILE_NAME }}
         run: terraform plan -out="out.plan"
 
       - name: apply
         env:
-          TF_VAR_deploy_user: ${{ vars.DEPLOY_USER }}
+          TF_VAR_deploy_user: ${{ env.AWS_PROFILE_NAME }}
         run: terraform apply out.plan
 
       - name: npm upload

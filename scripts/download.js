@@ -21,7 +21,13 @@ const streamToString = (stream) =>
 
 const run = async () => {
   const bucketResult = await createBucket(params)
-  console.log(bucketResult)
+  console.log({
+    type: 'bucketResult',
+    response: bucketResult,
+  })
+  if (!bucketResult) {
+    process.exit(5)
+  }
 
   // Create an object and upload it to the Amazon S3 bucket.
   try {
@@ -51,6 +57,7 @@ const run = async () => {
     console.log(result);
   } catch (err) {
     console.error("Error", err);
+    process.exit(1)
   }
 };
 
