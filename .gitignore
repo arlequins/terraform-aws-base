@@ -13,6 +13,8 @@ memo.txt
 # terraform customize file.
 plan.out
 
+node_modules
+
 out.plan
 terraform.tfstate
 terraform.tfstate.backup
