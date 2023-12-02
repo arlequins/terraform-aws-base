@@ -1,0 +1,749 @@
+#--------------------------------------------------------------
+# Project Settings
+#--------------------------------------------------------------
+deploy_user = "terraform"
+
+tags = {
+  env = "dev"
+  service = "base"
+}
+region = "ap-northeast-1"
+# TODO: need to change env and service.
+resourcegroups_group = {
+  name = "resource-group"
+  resource_query = [
+    {
+      query = <<JSON
+{
+  "ResourceTypeFilters": [
+    "AWS::AllSupported"
+  ],
+  "TagFilters": [
+    {
+      "Key": "env",
+      "Values": ["dev"]
+    },
+    {
+      "Key": "service",
+      "Values": ["base"]
+    }
+  ]
+}
+JSON
+    }
+  ]
+}
+#--------------------------------------------------------------
+# Name prefix
+# It is used as a prefix attached to various resource names.
+#--------------------------------------------------------------
+name_prefix = "base-"
+
+#--------------------------------------------------------------
+# Compute Optimizer
+# AWS Compute Optimizer recommends optimal AWS resources for your workloads to reduce
+# costs and improve performance by using machine learning to analyze historical utilization metrics.
+# Over-provisioning resources can lead to unnecessary infrastructure cost, and under-provisioning resources
+# can lead to poor application performance. Compute Optimizer helps you choose optimal configurations
+# for three types of AWS resources: Amazon EC2 instances, Amazon EBS volumes, and AWS Lambda functions,
+# based on your utilization data.
+#--------------------------------------------------------------
+compute_optimizer = {
+  is_enabled = true
+}
+#--------------------------------------------------------------
+# IAM: Users
+#--------------------------------------------------------------
+iam = {
+  is_enabled = true
+  user = {
+    "test1" = {
+      is_console_access = true
+      is_access_key     = false
+    },
+    "test2" = {
+      is_console_access = true
+      is_access_key     = false
+    },
+    "test3" = {
+      is_console_access = true
+      is_access_key     = false
+    },
+  }
+  #--------------------------------------------------------------
+  # Please specify the user with the same name that has been set in users.
+  #--------------------------------------------------------------
+  group = {
+    # This name will be used as the group name.
+    administrator = {
+      # If true, force MFA settings and login.
+      is_enabled_mfa = true
+      # TODO: need to set users.
+      users = [
+        "test1",
+      ]
+      # Please specify the base policy to provide.
+      # default null.
+      # You need to check this document.
+      # https://aws.amazon.com/jp/premiumsupport/knowledge-center/iam-increase-policy-size/
+      policy_document = {
+        name        = "iam-group-administrator-base-policy"
+        path        = "/"
+        description = ""
+        statement = [
+          #--------------------------------------------------------------
+          # Admin default rule start
+          #--------------------------------------------------------------
+          {
+            sid    = "DenyCloudTrailWrite"
+            effect = "Deny"
+            actions = [
+              "cloudtrail:DeleteEventDataStore",
+              "cloudtrail:PutEventSelectors",
+              "cloudtrail:StopLogging",
+              "cloudtrail:StartLogging",
+              "cloudtrail:UpdateEventDataStore",
+              "cloudtrail:UpdateTrail",
+              "cloudtrail:RestoreEventDataStore",
+              "cloudtrail:CancelQuery",
+              "cloudtrail:CreateEventDataStore",
+              "cloudtrail:PutInsightSelectors",
+              "cloudtrail:AddTags",
+              "cloudtrail:DeleteTrail",
+              "cloudtrail:CreateTrail",
+              "cloudtrail:StartQuery",
+              "cloudtrail:RemoveTags",
+            ]
+            resources = [
+              "*"
+            ]
+          },
+          {
+            sid    = "DenyConfigWrite"
+            effect = "Deny"
+            actions = [
+              "config:DeleteDeliveryChannel",
+              "config:DeleteOrganizationConfigRule",
+              "config:DeleteConformancePack",
+              "config:DeleteRetentionConfiguration",
+              "config:StartConfigurationRecorder",
+              "config:PutDeliveryChannel",
+              "config:PutExternalEvaluation",
+              "config:StartRemediationExecution",
+              "config:DeleteAggregationAuthorization",
+              "config:DeleteEvaluationResults",
+              "config:DeleteStoredQuery",
+              "config:DeleteConfigurationAggregator",
+              "config:DeleteConfigRule",
+              "config:PutConformancePack",
+              "config:PutStoredQuery",
+              "config:PutConfigurationRecorder",
+              "config:PutConfigRule",
+              "config:DeleteRemediationConfiguration",
+              "config:PutEvaluations",
+              "config:StopConfigurationRecorder",
+              "config:PutAggregationAuthorization",
+              "config:PutRemediationConfigurations",
+              "config:DeleteRemediationExceptions",
+              "config:StartConfigRulesEvaluation",
+              "config:DeleteConfigurationRecorder",
+              "config:DeleteResourceConfig",
+              "config:PutResourceConfig",
+              "config:DeleteOrganizationConformancePack",
+              "config:PutOrganizationConformancePack",
+              "config:PutConfigurationAggregator",
+              "config:TagResource",
+              "config:DeletePendingAggregationRequest",
+              "config:PutRetentionConfiguration",
+              "config:PutRemediationExceptions",
+              "config:PutOrganizationConfigRule",
+              "config:UntagResource",
+            ]
+            resources = [
+              "*"
+            ]
+          },
+          {
+            sid    = "DenyS3Log"
+            effect = "Deny"
+            actions = [
+              "s3:PutAnalyticsConfiguration",
+              "s3:PutAccessPointConfigurationForObjectLambda",
+              "s3:PutStorageLensConfiguration",
+              "s3:DeleteAccessPoint",
+              "s3:CreateBucket",
+              "s3:DeleteAccessPointForObjectLambda",
+              "s3:ReplicateObject",
+              "s3:DeleteBucketWebsite",
+              "s3:DeleteAccessPointPolicyForObjectLambda",
+              "s3:DeleteJobTagging",
+              "s3:PutLifecycleConfiguration",
+              "s3:PutBucketAcl",
+              "s3:PutObjectTagging",
+              "s3:DeleteObject",
+              "s3:CreateMultiRegionAccessPoint",
+              "s3:DeleteObjectTagging",
+              "s3:PutAccessPointPolicyForObjectLambda",
+              "s3:PutAccountPublicAccessBlock",
+              "s3:PutMultiRegionAccessPointPolicy",
+              "s3:DeleteStorageLensConfigurationTagging",
+              "s3:PutReplicationConfiguration",
+              "s3:DeleteObjectVersionTagging",
+              "s3:PutObjectLegalHold",
+              "s3:InitiateReplication",
+              "s3:PutBucketCORS",
+              "s3:DeleteBucketPolicy",
+              "s3:PutObject",
+              "s3:PutBucketNotification",
+              "s3:PutBucketLogging",
+              "s3:PutObjectVersionAcl",
+              "s3:PutAccessPointPublicAccessBlock",
+              "s3:PutBucketObjectLockConfiguration",
+              "s3:CreateJob",
+              "s3:PutAccessPointPolicy",
+              "s3:CreateAccessPoint",
+              "s3:PutAccelerateConfiguration",
+              "s3:DeleteObjectVersion",
+              "s3:ReplicateTags",
+              "s3:RestoreObject",
+              "s3:PutEncryptionConfiguration",
+              "s3:AbortMultipartUpload",
+              "s3:PutBucketTagging",
+              "s3:UpdateJobPriority",
+              "s3:DeleteBucket",
+              "s3:PutBucketVersioning",
+              "s3:PutObjectAcl",
+              "s3:PutBucketPublicAccessBlock",
+              "s3:PutIntelligentTieringConfiguration",
+              "s3:PutMetricsConfiguration",
+              "s3:PutStorageLensConfigurationTagging",
+              "s3:PutBucketOwnershipControls",
+              "s3:PutObjectVersionTagging",
+              "s3:DeleteMultiRegionAccessPoint",
+              "s3:PutJobTagging",
+              "s3:UpdateJobStatus",
+              "s3:BypassGovernanceRetention",
+              "s3:PutInventoryConfiguration",
+              "s3:ObjectOwnerOverrideToBucketOwner",
+              "s3:DeleteStorageLensConfiguration",
+              "s3:PutBucketWebsite",
+              "s3:PutBucketRequestPayment",
+              "s3:PutObjectRetention",
+              "s3:CreateAccessPointForObjectLambda",
+              "s3:PutBucketPolicy",
+              "s3:DeleteAccessPointPolicy",
+              "s3:ReplicateDelete",
+            ]
+            resources = [
+              "arn:aws:s3:::*-aws-log-*"
+            ]
+          },
+          #--------------------------------------------------------------
+          # Admin default rule end
+          #--------------------------------------------------------------
+        ]
+      }
+      policy = [
+        {
+          policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
+        }
+      ]
+    }
+    # This name will be used as the group name.
+    developer = {
+      # If true, force MFA settings and login.
+      is_enabled_mfa = true
+      # TODO: need to set users.
+      users = [
+        "test2",
+      ]
+      # Please specify the base policy to provide.
+      # default null.
+      # You need to check this document.
+      # https://aws.amazon.com/jp/premiumsupport/knowledge-center/iam-increase-policy-size/
+      policy_document = {
+        name        = "iam-group-developer-base-policy"
+        path        = "/"
+        description = ""
+        statement = [
+          #--------------------------------------------------------------
+          # Default rule start
+          #--------------------------------------------------------------
+          {
+            sid    = "AllowDefaultWidgetPage"
+            effect = "Allow"
+            actions = [
+              "servicecatalog:ListApplications",
+              "ce:GetCostAndUsage",
+              "ce:GetCostForecast",
+              "support:DescribeTrustedAdvisorChecks",
+              "support:DescribeTrustedAdvisorCheckSummaries",
+              "ram:ListResources",
+              "health:DescribeEventAggregates",
+            ]
+            resources = [
+              "*"
+            ]
+          },
+          {
+            sid    = "AllowS3LogList"
+            effect = "Allow"
+            actions = [
+              "s3:ListAllMyBuckets",
+            ]
+            resources = [
+              "*",
+            ]
+          },
+          {
+            sid    = "AllowS3Log"
+            effect = "Allow"
+            actions = [
+              "s3:Get*",
+              "s3:List*",
+              "s3:HeadBucket",
+            ]
+            resources = [
+              "arn:aws:s3:::base-aws-log-common-*",
+              "arn:aws:s3:::base-aws-log-common-*/*",
+              "arn:aws:s3:::base-aws-log-application-*",
+              "arn:aws:s3:::base-aws-log-application-*/*",
+            ]
+          },
+          {
+            sid    = "AllowAWSSecurityHubReadOnlyAccess"
+            effect = "Allow"
+            actions = [
+              "securityhub:Get*",
+              "securityhub:List*",
+              "securityhub:Describe*",
+            ]
+            resources = [
+              "*"
+            ]
+          },
+          {
+            sid    = "AllowAWSConfigUserAccess"
+            effect = "Allow"
+            actions = [
+              "config:Get*",
+              "config:Describe*",
+              "config:Deliver*",
+              "config:List*",
+              "config:Select*",
+              "tag:GetResources",
+              "tag:GetTagKeys",
+              "cloudtrail:DescribeTrails",
+              "cloudtrail:GetTrailStatus",
+              "cloudtrail:LookupEvents",
+            ]
+            resources = [
+              "*"
+            ]
+          },
+          {
+            sid    = "AllowCloudWatchReadOnlyAccess"
+            effect = "Allow"
+            actions = [
+              "autoscaling:Describe*",
+              "cloudwatch:Describe*",
+              "cloudwatch:Get*",
+              "cloudwatch:List*",
+              "logs:Get*",
+              "logs:List*",
+              "logs:StartQuery",
+              "logs:StopQuery",
+              "logs:Describe*",
+              "logs:TestMetricFilter",
+              "logs:FilterLogEvents",
+              "sns:Get*",
+              "sns:List*"
+            ]
+            resources = [
+              "*"
+            ]
+          },
+          #--------------------------------------------------------------
+          # Default rule end
+          #--------------------------------------------------------------
+          #--------------------------------------------------------------
+          # Custom rule start
+          #--------------------------------------------------------------
+          # TODO: If you wish to grant permissions to users, please add permissions for the target action below.
+          # The commented out items below are samples.
+
+          #   {
+          #     sid    = "AllowSSM"
+          #     effect = "Allow"
+          #     actions = [
+          #       "ssm:StartSession",
+          #       "ssm:TerminateSession",
+          #       "ssm:ResumeSession",
+          #       "ssm:DescribeSessions",
+          #       "ssm:GetConnectionStatus",
+          #       "ssm:DescribeInstanceProperties",
+          #       "ec2:describeInstances",
+          #     ]
+          #     resources = [
+          #       "*",
+          #     ]
+          #   },
+          #--------------------------------------------------------------
+          # Custom rule end
+          #--------------------------------------------------------------
+        ]
+      }
+      policy = [
+        {
+          policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+        },
+      ]
+    }
+    # This name will be used as the group name.
+    operator = {
+      # If true, force MFA settings and login.
+      is_enabled_mfa = true
+      # TODO: need to set users.
+      users = [
+        "test2",
+        "test3",
+      ]
+      # Please specify the base policy to provide.
+      # default null.
+      # You need to check this document.
+      # https://aws.amazon.com/jp/premiumsupport/knowledge-center/iam-increase-policy-size/
+      policy_document = {
+        name        = "iam-group-operator-base-policy"
+        path        = "/"
+        description = ""
+        statement = [
+          #--------------------------------------------------------------
+          # Default rule start
+          #--------------------------------------------------------------
+          {
+            sid    = "AllowDefaultWidgetPage"
+            effect = "Allow"
+            actions = [
+              "servicecatalog:ListApplications",
+              "ce:GetCostAndUsage",
+              "ce:GetCostForecast",
+              "support:DescribeTrustedAdvisorChecks",
+              "support:DescribeTrustedAdvisorCheckSummaries",
+              "ram:ListResources",
+              "health:DescribeEventAggregates",
+            ]
+            resources = [
+              "*"
+            ]
+          },
+          {
+            sid    = "AllowS3LogList"
+            effect = "Allow"
+            actions = [
+              "s3:ListAllMyBuckets",
+            ]
+            resources = [
+              "*",
+            ]
+          },
+          {
+            sid    = "AllowS3Log"
+            effect = "Allow"
+            actions = [
+              "s3:Get*",
+              "s3:List*",
+              "s3:HeadBucket",
+            ]
+            resources = [
+              "arn:aws:s3:::base-aws-log-common-*",
+              "arn:aws:s3:::base-aws-log-common-*/*",
+              "arn:aws:s3:::base-aws-log-application-*",
+              "arn:aws:s3:::base-aws-log-application-*/*",
+            ]
+          },
+          {
+            sid    = "AllowAWSSecurityHubReadOnlyAccess"
+            effect = "Allow"
+            actions = [
+              "securityhub:Get*",
+              "securityhub:List*",
+              "securityhub:Describe*",
+            ]
+            resources = [
+              "*"
+            ]
+          },
+          {
+            sid    = "AllowAWSConfigUserAccess"
+            effect = "Allow"
+            actions = [
+              "config:Get*",
+              "config:Describe*",
+              "config:Deliver*",
+              "config:List*",
+              "config:Select*",
+              "tag:GetResources",
+              "tag:GetTagKeys",
+              "cloudtrail:DescribeTrails",
+              "cloudtrail:GetTrailStatus",
+              "cloudtrail:LookupEvents",
+            ]
+            resources = [
+              "*"
+            ]
+          },
+          {
+            sid    = "AllowCloudWatchReadOnlyAccess"
+            effect = "Allow"
+            actions = [
+              "autoscaling:Describe*",
+              "cloudwatch:Describe*",
+              "cloudwatch:Get*",
+              "cloudwatch:List*",
+              "logs:Get*",
+              "logs:List*",
+              "logs:StartQuery",
+              "logs:StopQuery",
+              "logs:Describe*",
+              "logs:TestMetricFilter",
+              "logs:FilterLogEvents",
+              "sns:Get*",
+              "sns:List*"
+            ]
+            resources = [
+              "*"
+            ]
+          },
+          #--------------------------------------------------------------
+          # Default rule end
+          #--------------------------------------------------------------
+          #--------------------------------------------------------------
+          # Custom rule start
+          #--------------------------------------------------------------
+          # TODO: If you wish to grant permissions to users, please add permissions for the target action below.
+          # The commented out items below are samples.
+
+          #   {
+          #     sid    = "AllowSSM"
+          #     effect = "Allow"
+          #     actions = [
+          #       "ssm:StartSession",
+          #       "ssm:TerminateSession",
+          #       "ssm:ResumeSession",
+          #       "ssm:DescribeSessions",
+          #       "ssm:GetConnectionStatus",
+          #       "ssm:DescribeInstanceProperties",
+          #       "ec2:describeInstances",
+          #     ]
+          #     resources = [
+          #       "*",
+          #     ]
+          #   },
+          #--------------------------------------------------------------
+          # Custom rule end
+          #--------------------------------------------------------------
+        ]
+      }
+      policy = []
+    }
+    # This name will be used as the group name.
+    deploy_infra = {
+      # If true, force MFA settings and login.
+      is_enabled_mfa = false
+      # TODO: need to set users.
+      users = []
+      # Please specify the base policy to provide.
+      # default null.
+      # You need to check this document.
+      # https://aws.amazon.com/jp/premiumsupport/knowledge-center/iam-increase-policy-size/
+      policy_document = null
+      policy = [
+        {
+          policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
+        }
+      ]
+    }
+    # This name will be used as the group name.
+    deploy_code = {
+      # If true, force MFA settings and login.
+      is_enabled_mfa = false
+      users = []
+      # Please specify the base policy to provide.
+      # default null.
+      # You need to check this document.
+      # https://aws.amazon.com/jp/premiumsupport/knowledge-center/iam-increase-policy-size/
+      policy_document = {
+        name        = "iam-group-deploy-code-base-policy"
+        path        = "/"
+        description = ""
+        statement = [
+          {
+            sid    = "AllowS3"
+            effect = "Allow"
+            actions = [
+              "s3:Get*",
+              "s3:List*",
+              "s3:HeadBucket",
+              "s3:PutObject",
+              "s3:DeleteObject",
+            ]
+            resources = [
+              "arn:aws:s3:::*",
+              "arn:aws:s3:::*/*",
+            ]
+          },
+        ]
+      }
+      policy = []
+    }
+  }
+}
+
+#--------------------------------------------------------------
+# Common:Log Bucket
+#--------------------------------------------------------------
+common_log = {
+  #--------------------------------------------------------------
+  # S3 for log
+  # https://registry.terraform.io/modules/terraform-aws-modules/s3-bucket/aws/latest
+  #--------------------------------------------------------------
+  s3_log = {
+    bucket               = "aws-log-common"
+    create_bucket        = true
+    acl                  = "log-delivery-write"
+    attach_public_policy = true
+    block_public_acls    = true
+    block_public_policy  = true
+    force_destroy        = true
+    ignore_public_acls   = true
+    lifecycle_rule = [
+      {
+        id                                     = "default"
+        abort_incomplete_multipart_upload_days = 7
+        enabled                                = true
+        prefix                                 = null
+        expiration = [
+          {
+            # TODO: need to change days. default 400 days
+            days                         = 400
+            expired_object_delete_marker = false
+          }
+        ]
+        transition = [
+          {
+            days          = 30
+            storage_class = "ONEZONE_IA"
+          }
+        ]
+        noncurrent_version_expiration = [
+          {
+            days = 30
+          }
+        ]
+      }
+    ]
+    restrict_public_buckets = true
+    server_side_encryption_configuration = {
+      rule = {
+        apply_server_side_encryption_by_default = {
+          sse_algorithm     = "AES256"
+          kms_master_key_id = null
+        }
+      }
+    }
+    versioning = {
+      enabled = true
+    }
+  }
+
+  #--------------------------------------------------------------
+  # S3 for CloudTrail
+  # https://registry.terraform.io/modules/terraform-aws-modules/s3-bucket/aws/latest
+  #--------------------------------------------------------------
+  s3_cloudtrail = {
+    bucket               = "aws-log-cloudtrail"
+    create_bucket        = true
+    acl                  = "log-delivery-write"
+    attach_public_policy = true
+    block_public_acls    = true
+    block_public_policy  = true
+    force_destroy        = true
+    ignore_public_acls   = true
+    lifecycle_rule = [
+      {
+        id                                     = "default"
+        abort_incomplete_multipart_upload_days = 7
+        enabled                                = true
+        prefix                                 = null
+        expiration = [
+          {
+            # TODO: need to change days. default 400 days
+            days                         = 400
+            expired_object_delete_marker = false
+          }
+        ]
+        transition = [
+          {
+            days          = 30
+            storage_class = "ONEZONE_IA"
+          }
+        ]
+        noncurrent_version_expiration = [
+          {
+            days = 30
+          }
+        ]
+      }
+    ]
+    restrict_public_buckets = true
+    server_side_encryption_configuration = {
+      rule = {
+        apply_server_side_encryption_by_default = {
+          sse_algorithm     = "AES256"
+          kms_master_key_id = null
+        }
+      }
+    }
+    versioning = {
+      enabled = true
+    }
+  }
+}
+#--------------------------------------------------------------
+# Security:IAM
+#--------------------------------------------------------------
+security_iam = {
+  # TODO: need to set is_enabled for settings of IAM security.
+  is_enabled = true
+  aws_iam_account_password_policy = {
+    allow_users_to_change_password = true
+    hard_expiry                    = true
+    max_password_age               = 90
+    minimum_password_length        = 14
+    password_reuse_prevention      = 24
+    require_lowercase_characters   = true
+    require_numbers                = true
+    require_symbols                = true
+    require_uppercase_characters   = true
+  }
+
+  aws_iam_role = {
+    description = ""
+    name        = "security-support-role"
+    path        = "/"
+  }
+}
+#--------------------------------------------------------------
+# Security:S3
+#--------------------------------------------------------------
+security_s3 = {
+  # TODO: need to set is_enabled for settings of S3 security.
+  is_enabled = true
+  # Manages S3 account-level Public Access Block configuration. For more information about these settings, see the AWS S3 Block Public Access documentation.
+  aws_s3_account_public_access_block = {
+    block_public_acls       = true
+    block_public_policy     = true
+    ignore_public_acls      = true
+    restrict_public_buckets = true
+  }
+}
